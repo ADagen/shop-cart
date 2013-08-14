@@ -6,10 +6,11 @@ var Bundle = Bundle || {};
 Bundle.Model = Backbone.Model.extend({
 	defaults: function() {
 		return {
-			_id      : 0,
-			title   : "no name",
-			desc    : "no description",
-			amount  : 1
+			_id         : 0,
+			title       : "no name",
+			desc        : "no description",
+			amount      : 1,
+			timestamp   : 0
 		};
 	},
 	validate: function(options) {
@@ -20,7 +21,7 @@ Bundle.Model = Backbone.Model.extend({
 		}
 	},
 	initialize: function(options) {
-		//this.save();
+		this.set({ 'timestamp': Date.now() });
 		return this
 	}
 });

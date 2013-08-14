@@ -7,12 +7,13 @@ var Cart = Cart || {};
 Cart.Model = Backbone.Model.extend({
 	defaults: function() {
 		return {
-			products: [],
-			foo: false
+			url: '/'
 		};
 	},
-	initialize: function(options) {
-		this.container = new CartContainer();
+	initialize: function() {
+		this.container = new CartContainer({
+			url: this.get('url')
+		});
 	},
 	clear: function() {
 		this.destroy();
@@ -85,6 +86,7 @@ Cart.View = Backbone.View.extend({
 		});
 	},
 	addBundlesHandler: function(bundleOptions) {
+		this.render();
 		this.model.container.each(this.addBundleHandler);
 	},
 	removeBundleHandler: function() {
