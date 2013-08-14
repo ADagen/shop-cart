@@ -56,7 +56,7 @@ Cart.View = Backbone.View.extend({
 	addRandom: function() {
 		var randomId = Math.round(Math.random() * 1e6),
 			options = {
-				id      : randomId,
+				_id      : randomId,
 				title   : "Name" + randomId,
 				desc    : "no description",
 				amount  : 1

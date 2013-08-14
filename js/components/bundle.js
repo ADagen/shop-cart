@@ -6,7 +6,7 @@ var Bundle = Bundle || {};
 Bundle.Model = Backbone.Model.extend({
 	defaults: function() {
 		return {
-			id      : 0,
+			_id      : 0,
 			title   : "no name",
 			desc    : "no description",
 			amount  : 1
