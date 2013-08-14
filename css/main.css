@@ -58,9 +58,20 @@
     position: relative;
 }
 .bundle-wrap .remove {
-    color: red;
+    color: white;
+    background-color: lightcoral;
+    border-radius: 3px;
+    padding: 3px 5px;
     position: absolute;
     right: 5px;
     top: 5px;
     cursor: pointer;
+    transition: all linear 0.2s;
+}
+.bundle-wrap .remove:hover {
+    background-color: red;
+    box-shadow: 0 0 3px red;
+}
+.bundle-wrap .remove:active {
+    background-color: darkred;
 }
