@@ -22,7 +22,8 @@
     <script>
         if (typeof window['localStorage'] === 'undefined') {
             // отсутствие поддержки localStorage или запуск IE в локальном режиме
-            alert('Please update your browser');
+            // использовать cookies через такой же api
+            alert('localStorage not enabled, fallback to cookie');
         } else {
             var shopCart = new ShopCart({});
         }
