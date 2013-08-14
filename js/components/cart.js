@@ -23,12 +23,12 @@ Cart.View = Backbone.View.extend({
 	initialize: function() {
 		// шаблон компилируется только при создании экземпляра
 		this.template = _.template($('#cart-template').html());
-		this.show();
+		this.createDOM();
 
-		_.bindAll(this, "addBundle", "removeBundle", "addRandom");
-		this.model.container.bind('add', this.addBundle);
-		this.model.container.bind('reset', this.addBundles, this);
-		this.model.container.bind('remove', this.removeBundle, this);
+		_.bindAll(this, "addBundleHandler", "removeBundleHandler", "addRandom", "addBundle");
+		this.model.container.on('add', this.addBundleHandler, this);
+		this.model.container.on('reset', this.addBundlesHandler, this);
+		this.model.container.on('remove', this.removeBundleHandler, this);
 		this.model.container.reset(this.model.container.localStorage.findAll());
 	},
 
@@ -36,40 +36,46 @@ Cart.View = Backbone.View.extend({
 		"click .add-to-cart" : "addRandom"
 	},
 
-	show: function() {
+	createDOM: function() {
 		this.$el.appendTo(this.options.nest);
+		this.show();
+	},
+
+	show: function() {
 		this.render();
+		this.$el.show('fast');
 	},
 
 	hide: function() {
-
-	},
-
-	// добавляет случайный товар
-	addRandom: function() {
-		var randomId = Math.round(Math.random() * 1e6);
-//			newBundle = new Bundle.Model({
-//				id      : randomId,
-//				title   : "Name" + randomId,
-//				desc    : "no description",
-//				amount  : 1
-//			});
-//		this.model.container.add(newBundle);
-//		newBundle.save();
-
-		this.model.container.create({
-			id      : randomId,
-			title   : "Name" + randomId,
-			desc    : "no description",
-			amount  : 1
-		})
+		this.$el.hide('fast');
 	},
 
 	/**
-	 * Добавляет новый товар
+	 * Добавляет случайный товар
+	 */
+	addRandom: function() {
+		var randomId = Math.round(Math.random() * 1e6),
+			options = {
+				id      : randomId,
+				title   : "Name" + randomId,
+				desc    : "no description",
+				amount  : 1
+			};
+		this.addBundle(options);
+	},
+	/**
+	 * Обработчик события появления нового товара в корзине
+	 * @param {object} options - хэшмап с параметрами добавляемого товара
+	 */
+	addBundle: function(options) {
+		this.model.container.create(options)
+	},
+
+	/**
+	 * Обработчик события появления нового товара в корзине
 	 * @param {object} bundleOptions
 	 */
-	addBundle: function(bundleOptions) {
+	addBundleHandler: function(bundleOptions) {
 		console.log('CartView addBundle', bundleOptions);
 		var nest = $('<div>');
 		this.$list.append(nest);
@@ -78,14 +84,11 @@ Cart.View = Backbone.View.extend({
 			nest    : nest
 		});
 	},
-	addBundles: function(bundleOptions) {
-		this.model.container.each(this.addBundle);
+	addBundlesHandler: function(bundleOptions) {
+		this.model.container.each(this.addBundleHandler);
 	},
-	removeBundle: function() {
+	removeBundleHandler: function() {
 		console.log('CartView removeBundle');
-	},
-	renderAll: function(model, resp, options) {
-		console.log('!!!renderAll', model, resp, options);
 	},
 	render: function() {
 		var context = _.extend(this.model.toJSON(), { cid: this.model.cid });
