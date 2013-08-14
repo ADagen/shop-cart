@@ -2,13 +2,13 @@
  * @author dagen-niger
  */
 
-App = function(options) {
+ShopCart = function(options) {
 	this.options = options;
 	this.initialize();
 };
 
-App.prototype = {
-	constructor: App,
+ShopCart.prototype = {
+	constructor: ShopCart,
 	initialize: function() {
 		jQuery(document).ready(function() {
 			this.start();

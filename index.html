@@ -20,7 +20,12 @@
     <!-- application -->
     <script src="js/app.js"></script>
     <script>
-        var shopCart = new App({});
+        if (typeof window['localStorage'] === 'undefined') {
+            // отсутствие поддержки localStorage или запуск IE в локальном режиме
+            alert('Please update your browser');
+        } else {
+            var shopCart = new ShopCart({});
+        }
     </script>
 
     <!-- templates -->
