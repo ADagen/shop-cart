@@ -2,30 +2,35 @@
  * @author dagen-niger
  */
 
-App = function() {};
+App = function(options) {
+	this.options = options;
+	this.initialize();
+};
 
 App.prototype = {
 	constructor: App,
 	initialize: function() {
-		console.log('i am initialized');
+		jQuery(document).ready(function() {
+			this.start();
+		}.bind(this));
+		console.log('i am initialized with options', this.options);
 		return this;
 	},
 	start: function() {
 		console.log('i am started');
-		var cart = new CartRouter({});
-		$('body').append(cart.get$el());
+
+		var cartModel = new Cart.Model();
+		this.cart = new Cart.View({
+			nest: $('body'),
+			model: cartModel
+		});
+
 		Backbone.history.start();
-
-		setInterval(function() {
-			this.add();
-		}.bind(this), 1000);
-
-		this.cart = cart;
 		return this;
 	},
-	add: function() {
+	add: function(options) {
 		console.log(this, this.cart);
-		this.cart.add();
+		this.cart.add(options);
 	},
 	postToServer: function() {
 		console.log('sync');

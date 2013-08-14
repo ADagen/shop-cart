@@ -3,8 +3,8 @@
  * @require bundle.js
  */
 
-var CartContainer =  Backbone.Collection.extend({
-	model: BundleModel,
+var CartContainer = Backbone.Collection.extend({
+	model: Bundle.Model,
 	localStorage: new Store("shop-cart"),
 	/**
 	 * Сортировка по времени добавления в корзину

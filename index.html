@@ -2,13 +2,14 @@
 <html>
 <head>
     <title>Shop cart - backbone test</title>
+    <link rel="icon" href="http://backbonejs.org/docs/images/favicon.ico">
     <link rel="stylesheet" href="css/main.css">
 
     <!-- modules -->
     <script src="js/jquery-2.0.3.js"></script>
     <script src="js/underscore-1.5.0.js"></script>
     <script src="js/backbone-1.0.0.js"></script>
-    <script src="js/backbone.localStorage.1.1.0.js"></script>
+    <script src="js/backbone.localStorage.1.1.6.js"></script>
 
     <!-- components -->
     <script src="js/components/bundle.js"></script>
@@ -18,25 +19,25 @@
     <!-- application -->
     <script src="js/app.js"></script>
     <script>
-        var app = new App().initialize();
-        jQuery(document).ready(function() {
-            app.start();
-        });
+        var shopCart = new App({});
     </script>
 
     <!-- templates -->
     <script type="text/template" id="cart-template">
         <div class="cart-wrap">
-            <h2>Cart</h2>
+            <nav class="cart-head">
+                <h2>Cart</h2><div class="add-to-cart">Add</div>
+            </nav>
             <div class="bundleList"></div>
         </div>
     </script>
+
     <script type="text/template" id="bundle-template">
-        <div class="bundle-wrap">
-            id: <%= id %><br>
-            title: <%= title %><br>
-            desc: <%= desc %><br>
-            amount: <%= amount %>
+        <div class="bundle-wrap text">
+            id      : <%= id %><br>
+            title   : <%= title %><br>
+            desc    : <%= desc %><br>
+            amount  : <%= amount %><br>
             <span class="remove">remove</span>
         </div>
     </script>
