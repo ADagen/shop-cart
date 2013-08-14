@@ -13,8 +13,12 @@ var CartContainer = Backbone.Collection.extend({
 
 	localStorage: new Store("shop-cart"),
 
-	initialize: function() {
-		_.bindAll(this, "_updateLocalStorage", "_errorHandler");
+	initialize: function(options) {
+		// wtf? по документации должно быть автоматическое присваивание
+		this.url = options.url;
+
+		_.bindAll(this, "_updateLocalStorage", "_errorHandler", "removeModelHandler");
+		this.on('remove', this.removeModelHandler)
 	},
 	/**
 	 * Сортировка по времени добавления в корзину
@@ -73,6 +77,10 @@ var CartContainer = Backbone.Collection.extend({
 	 * @param {object} response
 	 */
 	_errorHandler: function(response) {
-		this.trigger("invalid", response, this);
+		//this.trigger("invalid", response, this);
+	},
+
+	removeModelHandler: function(model) {
+		//console.log('removeModelHandler', model);
 	}
 });

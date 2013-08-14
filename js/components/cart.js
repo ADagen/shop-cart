@@ -64,12 +64,23 @@ Cart.View = Backbone.View.extend({
 			};
 		this.addBundle(options);
 	},
+
 	/**
-	 * Обработчик события появления нового товара в корзине
+	 * Добавляет новый товар в корзину
 	 * @param {object} options - хэшмап с параметрами добавляемого товара
 	 */
 	addBundle: function(options) {
 		this.model.container.create(options)
+	},
+
+	/**
+	 * Удаляет товар по _id
+	 * @param {number} _id
+	 */
+	removeBundle: function(_id) {
+		var bundles = this.model.container.where({ _id : _id });
+		console.log('remove', bundles);
+		this.model.container.remove(bundles);
 	},
 
 	/**
@@ -85,13 +96,20 @@ Cart.View = Backbone.View.extend({
 			nest    : nest
 		});
 	},
-	addBundlesHandler: function(bundleOptions) {
+
+	/**
+	 * Обработчик обновления корзины
+	 */
+	addBundlesHandler: function() {
 		this.render();
 		this.model.container.each(this.addBundleHandler);
 	},
-	removeBundleHandler: function() {
-		console.log('CartView removeBundle');
+
+	removeBundleHandler: function(model) {
+		console.log('CartView removeBundle', model);
+		model.trigger('removeQuery');
 	},
+
 	render: function() {
 		var context = _.extend(this.model.toJSON(), { cid: this.model.cid });
 		this.$el.html(this.template(context));

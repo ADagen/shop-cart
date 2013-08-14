@@ -21,20 +21,16 @@
     <script src="js/shop-cart.js"></script>
 
     <script>
-        if (typeof window['localStorage'] === 'undefined') {
-            // отсутствие поддержки localStorage или запуск IE в локальном режиме
-            // использовать cookies через такой же api
-            alert('localStorage not enabled, fallback to cookie');
-        } else {
-            var shopCart = new ShopCart({});
-        }
+        var shopCart = new ShopCart({
+            endpoint: 'serverResponse.json'
+        });
     </script>
 
     <!-- templates -->
     <script type="text/template" id="cart-template">
         <div class="cart-wrap">
             <nav class="cart-head">
-                <h2>Cart</h2><div class="add-to-cart">Add</div>
+                <h2>Cart</h2><div class="add-to-cart">Add random</div>
             </nav>
             <div class="bundleList"></div>
         </div>
@@ -51,5 +47,15 @@
     </script>
 
 </head>
-<body></body>
+<body>
+<pre>
+    One more backbone.js sample
+    Welcome to see further: <a href=https://github.com/dagen-niger/shop-cart>github.com/dagen-niger/shop-cart</a>
+    Usage within browser console:
+        shopCart.add(options)
+        shopCart.remove(_id)
+        shopCart.pull()
+        shopCart.push()
+</pre>
+</body>
 </html>

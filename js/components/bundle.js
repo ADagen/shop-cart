@@ -29,7 +29,9 @@ Bundle.Model = Backbone.Model.extend({
 Bundle.View = Backbone.View.extend({
 	initialize: function() {
 		this.template = _.template($('#bundle-template').html());
-		this.model.bind('change', this.render, this);
+		this.model.on('change', this.render, this);
+		this.model.on('destroy', this._removeHandler, this);
+		this.model.on('removeQuery', this.removeQuery, this);
 		this.show();
 	},
 	events: {
@@ -56,7 +58,11 @@ Bundle.View = Backbone.View.extend({
 	 * Уничтожает текущий товар
 	 */
 	removeQuery: function() {
-		console.log('remove', this.model);
+		this.model.destroy();
+	},
+
+	_removeHandler: function() {
+		//console.trace();
 		this.$el.hide({
 			duration: 200,
 			complete: function() {
@@ -64,6 +70,5 @@ Bundle.View = Backbone.View.extend({
 				this.options.nest.remove();
 			}.bind(this)
 		});
-		this.model.destroy();
 	}
 });

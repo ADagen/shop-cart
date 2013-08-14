@@ -4,24 +4,30 @@
 
 ShopCart = function(options) {
 	this.options = _.extend({
-		endpoint: 'serverResponse.json'
+		endpoint: '/'
 	}, options);
 	this.initialize();
 };
 
 // унаследую от Backbone.Events,
-// чтобы делегировать нужные события внутренних моделей и
+// чтобы делегировать нужные события внутренних моделей/представлений
+// тогда внешний код не будет зависеть от структуры ShopCart
 ShopCart.prototype = Object.create(Backbone.Events);
 
 _.extend(ShopCart.prototype, {
 	constructor: ShopCart,
 	initialize: function() {
 		jQuery(document).ready(this.start.bind(this));
-		console.log('i am initialized with options', this.options);
+		console.log('ShopCart initialized with options', this.options);
 		return this;
 	},
+
+	/**
+	 * Старт корзины (когда приложение готово)
+	 * @return {ShopCart}
+	 */
 	start: function() {
-		console.log('ShopCart: i am started', this);
+		console.log('ShopCart started', this);
 
 		this.cartModel = new Cart.Model({
 			url: this.options.endpoint
@@ -33,13 +39,40 @@ _.extend(ShopCart.prototype, {
 
 		return this;
 	},
+
+	/**
+	 * Добавление товара
+	 * @param {object} options
+	 * @return {ShopCart}
+	 */
 	add: function(options) {
 		this.cart.add(options);
+		return this
 	},
+
+	/**
+	 * Удаление товара по переданному при добавлении _id
+	 * @param {number} _id
+	 * @return {ShopCart}
+	 */
+	remove: function(_id) {
+		this.cart.removeBundle(_id);
+		return this
+	},
+
+	/**
+	 * Отправка корзины на endpoint
+	 * @return {jqXHR}
+	 */
 	push: function() {
-		this.cartModel.container.pushData();
+		return this.cartModel.container.pushData();
 	},
+
+	/**
+	 * Получение корзины с endpoint
+	 * @return {jqXHR}
+	 */
 	pull: function() {
-		this.cartModel.container.pullData();
+		return this.cartModel.container.pullData();
 	}
 });
