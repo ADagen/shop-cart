@@ -33,7 +33,7 @@ _.extend(ShopCart.prototype, {
 			url: this.options.endpoint
 		});
 		this.cart = new Cart.View({
-			nest    : $('body'),
+			el      : $('#cart-nest'),
 			model   : this.cartModel
 		});
 

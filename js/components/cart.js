@@ -11,12 +11,13 @@ Cart.Model = Backbone.Model.extend({
 		};
 	},
 	initialize: function() {
-		this.container = new CartContainer({
+		this.container = new CartContainer([], {
 			url: this.get('url')
 		});
+		this.on("resetContainer", this.resetContainerQuery, this);
 	},
-	clear: function() {
-		this.destroy();
+	resetContainerQuery: function() {
+		this.container.reset(this.container.localStorage.findAll());
 	}
 });
 
@@ -26,11 +27,20 @@ Cart.View = Backbone.View.extend({
 		this.template = _.template($('#cart-template').html());
 		this.createDOM();
 
-		_.bindAll(this, "addBundleHandler", "removeBundleHandler", "addRandom", "addBundle");
-		this.model.container.on('add', this.addBundleHandler, this);
-		this.model.container.on('reset', this.addBundlesHandler, this);
-		this.model.container.on('remove', this.removeBundleHandler, this);
-		this.model.container.reset(this.model.container.localStorage.findAll());
+		_.bindAll(this,
+			"addBundleHandler",
+			"addBundlesHandler",
+			"removeBundleHandler",
+			"addRandom",
+			"addBundle");
+
+		this.listenTo(this.model.container, {
+			'add'   : this.addBundleHandler,
+			'reset' : this.addBundlesHandler,
+			'remove': this.removeBundleHandler
+		});
+
+		this.model.trigger("resetContainer");
 	},
 
 	events: {
@@ -38,7 +48,6 @@ Cart.View = Backbone.View.extend({
 	},
 
 	createDOM: function() {
-		this.$el.appendTo(this.options.nest);
 		this.show();
 	},
 
@@ -79,7 +88,6 @@ Cart.View = Backbone.View.extend({
 	 */
 	removeBundle: function(_id) {
 		var bundles = this.model.container.where({ _id : _id });
-		console.log('remove', bundles);
 		this.model.container.remove(bundles);
 	},
 
@@ -88,12 +96,9 @@ Cart.View = Backbone.View.extend({
 	 * @param {object} bundleOptions
 	 */
 	addBundleHandler: function(bundleOptions) {
-		console.log('CartView addBundle', bundleOptions);
-		var nest = $('<div>');
-		this.$list.append(nest);
 		new Bundle.View({
 			model   : bundleOptions,
-			nest    : nest
+			el      : $('<div>').appendTo(this.$list)
 		});
 	},
 
@@ -106,13 +111,11 @@ Cart.View = Backbone.View.extend({
 	},
 
 	removeBundleHandler: function(model) {
-		console.log('CartView removeBundle', model);
 		model.trigger('removeQuery');
 	},
 
 	render: function() {
-		var context = _.extend(this.model.toJSON(), { cid: this.model.cid });
-		this.$el.html(this.template(context));
+		this.$el.html(this.template(this.model.toJSON()));
 		this.$list = this.$('.bundleList');
 		return this;
 	}

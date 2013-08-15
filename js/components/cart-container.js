@@ -6,20 +6,12 @@
 var CartContainer = Backbone.Collection.extend({
 
 	model: Bundle.Model,
-
-	// тестовый урл для проверки this.pullData()
-	// передаётся из ShopCart
-	//url: 'serverResponse.json',
-
 	localStorage: new Store("shop-cart"),
 
 	initialize: function(options) {
-		// wtf? по документации должно быть автоматическое присваивание
-		this.url = options.url;
-
-		_.bindAll(this, "_updateLocalStorage", "_errorHandler", "removeModelHandler");
-		this.on('remove', this.removeModelHandler)
+		_.bindAll(this, "_updateLocalStorage", "_errorHandler");
 	},
+
 	/**
 	 * Сортировка по времени добавления в корзину
 	 * @param {Bundle.Model} bundle1
@@ -37,7 +29,7 @@ var CartContainer = Backbone.Collection.extend({
 
 	/**
 	 * Отправляет корзину на указанный урл
-	 * @return {jqXHR}
+	 * @return {jqXHR} - для последующей обработки с помощью done() и fail()
 	 */
 	pushData: function() {
 		return Backbone.ajaxSync('update', this, {
@@ -48,7 +40,7 @@ var CartContainer = Backbone.Collection.extend({
 
 	/**
 	 * Забирает корзину с указанного урл
-	 * @return {jqXHR}
+	 * @return {jqXHR} - для последующей обработки с помощью done() и fail()
 	 */
 	pullData: function() {
 		return Backbone.ajaxSync('read', this, {
@@ -62,7 +54,6 @@ var CartContainer = Backbone.Collection.extend({
 	 * @param {object} response
 	 */
 	_updateLocalStorage: function(response) {
-
 		// reset не удалит отображение моделей в localStorage, поэтому сбрасываю его
 		this.localStorage._clear();
 
@@ -72,15 +63,7 @@ var CartContainer = Backbone.Collection.extend({
 		});
 	},
 
-	/**
-	 * Обработчик ошибок
-	 * @param {object} response
-	 */
-	_errorHandler: function(response) {
-		//this.trigger("invalid", response, this);
-	},
+	_errorHandler: function() {
 
-	removeModelHandler: function(model) {
-		//console.log('removeModelHandler', model);
 	}
 });

@@ -15,12 +15,11 @@ Bundle.Model = Backbone.Model.extend({
 	},
 	validate: function(options) {
 		if (!options.amount) {
-			var errorMsg = "Amount should be positive";
-			this.trigger("invalid:amount", errorMsg, this);
-			return errorMsg;
+			return "Amount should be positive"
 		}
 	},
 	initialize: function(options) {
+		// сохраняю для последующей сортировки по времени добавления в корзину
 		this.set({ 'timestamp': Date.now() });
 		return this
 	}
@@ -29,17 +28,21 @@ Bundle.Model = Backbone.Model.extend({
 Bundle.View = Backbone.View.extend({
 	initialize: function() {
 		this.template = _.template($('#bundle-template').html());
-		this.model.on('change', this.render, this);
-		this.model.on('destroy', this._removeHandler, this);
-		this.model.on('removeQuery', this.removeQuery, this);
+		_.bindAll(this, "render", "_removeHandler", "removeQuery");
+
+		this.listenTo(this.model, {
+			'change'        : this.render,
+			'destroy'       : this._removeHandler,
+			'removeQuery'   : this.removeQuery
+		});
+
 		this.show();
 	},
 	events: {
 		"click .remove" : "removeQuery"
 	},
 	render: function() {
-		var context = _.extend(this.model.toJSON(), { cid: this.model.cid });
-		this.$el.html(this.template(context));
+		this.$el.html(this.template(this.model.toJSON()));
 		return this;
 	},
 
@@ -47,28 +50,25 @@ Bundle.View = Backbone.View.extend({
 	 * Появление текущего товара
 	 */
 	show: function() {
-		this.$el
-			.appendTo(this.options.nest)
-			.css({ display: 'none' });
 		this.render();
-		this.$el.show('fast');
+		this.$el.css({ display: 'none' }).show('fast');
 	},
 
 	/**
-	 * Уничтожает текущий товар
+	 * Запрос на уничтожение текущего товара
 	 */
 	removeQuery: function() {
 		this.model.destroy();
 	},
 
+	/**
+	 * Событие уничтожения
+	 */
 	_removeHandler: function() {
 		//console.trace();
 		this.$el.hide({
 			duration: 200,
-			complete: function() {
-				this.remove();
-				this.options.nest.remove();
-			}.bind(this)
+			complete: this.remove.bind(this)
 		});
 	}
 });
