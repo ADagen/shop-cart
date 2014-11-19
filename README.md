@@ -3,4 +3,4 @@ shop-cart
 
 Backbone.js implementation of shop cart
 
-Live demo: http://dagenniger.ipage.com/ShopCart/
+Live demo: http://dagen-niger.github.io/shop-cart/
